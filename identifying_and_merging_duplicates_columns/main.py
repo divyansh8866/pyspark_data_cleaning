@@ -39,8 +39,10 @@ class SparkDfCleaner():
                     pass
             self.metadata_dict = duplicate_col_dict
             print(self.metadata_dict)
+            return True
         else:
             print(">> No duplicate column names found.")
+            return False
 
     def merge_duplicate_col(self):
       try: 
@@ -64,18 +66,23 @@ class SparkDfCleaner():
 
     def return_df(self):
         return self.df
+    
+    def main(self):
+        flag = self.identify_duplicate_col()
+        if flag:
+            self.merge_duplicate_col()
+            return self.df
+        else:
+            print(">> No changes made to Spark_df")
+            return self.df
+            
+        
+        
 
 # Show the original dataframe
 df.show()
 
 # Create an instance of the SparkDfCleaner class
 handler = SparkDfCleaner(df)
-
-# Identify duplicate columns in the DataFrame
-handler.identify_duplicate_col()
-
-# Merge duplicate columns in the DataFrame
-df = handler.merge_duplicate_col()
-
-# Show the DataFrame with merged columns
-handler.return_df().show()
+spark_df = handler.main()
+spark_df.show()
